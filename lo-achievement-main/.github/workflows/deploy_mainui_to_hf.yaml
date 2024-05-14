@@ -1,0 +1,54 @@
+name: Deploy UI to HF Space
+
+on: 
+  push:
+    branches:
+      main
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: main
+    - name: Get git info
+      working-directory: main
+      run: |
+        echo "com_username=$(git log -n 1 --pretty=format:%an)" >> $GITHUB_ENV
+        echo "com_email=$(git log -n 1 --pretty=format:%ae)" >> $GITHUB_ENV
+        echo "com_msg=$(git log -n 1 --pretty=format:%s)" >> $GITHUB_ENV
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install huggingface_hub
+    - name: Get HF auth
+      run: printf '%s\nn' ${{secrets.HF_TOKEN}} | huggingface-cli login
+    - name: Checkout HF repo
+      run: |
+        git clone https://vanderbilt-dsi-user:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/vanderbilt-dsi/Personal-Tutor.git
+      working-directory: .
+    - name: Copy files
+      run: |
+        cp main/Apps/ui_scripts/FullStudyApp.py Personal-Tutor/app.py
+        cp main/Apps/ui_scripts/base_requirements.txt Personal-Tutor/requirements.txt
+        cp main/Apps/ui_scripts/UIDockerfile Personal-Tutor/Dockerfile
+        
+        # Output redirection to add newlines to README.md
+        echo -e "\n\n" >> Personal-Tutor/README.md
+
+        # Concatenate READMEhf.md text onto Personal-Tutor/README.md
+        cat main/Apps/ui_scripts/READMEhf.md >> Personal-Tutor/README.md
+        
+    - name: Commit files
+      working-directory: ./Personal-Tutor
+      run: |
+        git config user.name "${{ env.com_username }}"
+        git config user.email "${{ env.com_email }}"
+        git add app.py requirements.txt Dockerfile README.md
+        git commit -m "${{ env.com_msg }}"
+    - name: Push to Hub
+      working-directory: ./Personal-Tutor
+      run: git push --force https://vanderbilt-dsi-user:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/vanderbilt-dsi/Personal-Tutor.git main

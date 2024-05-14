@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ai_classroom_suite"
+  site-url: "https://vanderbilt-data-science.github.io/lo-achievement"
+  description: "A repository supporting enhanced instruction and grading using AI"
+  repo-branch: main
+  repo-url: "https://github.com/vanderbilt-data-science/lo-achievement"

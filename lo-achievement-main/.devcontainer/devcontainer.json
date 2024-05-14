@@ -1,0 +1,25 @@
+{
+    "name": "CLAS Container",
+    "dockerFile": "Dockerfile",
+    //"forwardPorts": [80, 443, 8080],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            },
+            "extensions": [
+				"ms-python.python",
+				"ms-azuretools.vscode-docker",
+				"ms-vscode-remote.remote-containers",
+        "ms-toolsai.jupyter",
+				"ms-toolsai.vscode-jupyter-cell-tags",
+				"ms-toolsai.jupyter-renderers",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter-keymap"
+			]
+        }
+    }
+   // "mounts": [
+   //     "source=/host/path,target=/container/path,type=bind"
+    //],
+}

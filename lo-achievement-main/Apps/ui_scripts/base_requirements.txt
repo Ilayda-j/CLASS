@@ -1,0 +1,10 @@
+langchain==0.0.327
+pandas
+numpy
+openai==0.28.1
+gradio==3.45.2
+chromadb==0.4.13
+tiktoken==0.5.1
+unstructured==0.10.18
+poppler-utils
+unstructured[pdf]
